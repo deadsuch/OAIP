@@ -1,0 +1,70 @@
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+const int HASH_SIZE = 8;
+
+struct Person {
+    string surname;
+    int weight;
+    int height;
+};
+
+int hashFunc(int key) {
+    return key % HASH_SIZE;
+}
+
+int main() {
+    Person people[6] = { {"Smith", 70, 170}, {"Johnson", 65, 175}, {"Williams", 80, 180}, {"Jones", 75, 185}, {"Brown", 90, 190}, {"Davis", 85, 195} };
+
+    Person hashTable[HASH_SIZE];
+    for (int i = 0; i < HASH_SIZE; i++) {
+        hashTable[i].height = -1;
+    }
+
+    for (int i = 0; i < 6; i++) {
+        int index = hashFunc(people[i].height);
+        while (hashTable[index].height != -1) {
+            index++;
+            index %= HASH_SIZE;
+        }
+        hashTable[index] = people[i];
+    }
+
+    cout << "Original array:\n";
+    for (int i = 0; i < 6; i++) {
+        cout << people[i].surname << " " << people[i].weight << " " << people[i].height << endl;
+    }
+
+    cout << "\nHash table:\n";
+    for (int i = 0; i < HASH_SIZE; i++) {
+        cout << i << ": ";
+        if (hashTable[i].height == -1) {
+            cout << "Empty\n";
+        }
+        else {
+            cout << hashTable[i].surname << " " << hashTable[i].weight << " " << hashTable[i].height << endl;
+        }
+    }
+
+    int searchKey;
+    cout << "\nEnter search key (height): ";
+    cin >> searchKey;
+
+    int searchIndex = hashFunc(searchKey);
+    while (hashTable[searchIndex].height != -1 && hashTable[searchIndex].height != searchKey) {
+        searchIndex++;
+        searchIndex %= HASH_SIZE;
+    }
+
+    if (hashTable[searchIndex].height == -1) {
+        cout << "\nPerson not found\n";
+    }
+    else {
+        cout << "\nPerson found:\n";
+        cout << hashTable[searchIndex].surname << " " << hashTable[searchIndex].weight << " " << hashTable[searchIndex].height << endl;
+    }
+
+    return 0;
+}
